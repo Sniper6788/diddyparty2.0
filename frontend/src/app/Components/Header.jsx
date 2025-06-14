@@ -12,7 +12,7 @@ function Header() {
                 <div className=''>AgniRakshak</div>
             </div>
             <div className=''>
-                <SignInButton/></div>                
+                <UserButton/></div>                
             </div>
 
         
