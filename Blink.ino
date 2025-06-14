@@ -1,25 +1,26 @@
 #include <dht.h>
-#define outPin 7
+
+#define DHTPIN 7
+#define MQ2PIN A1
 
 dht DHT;
 
 void setup() {
-  Serial.begin(9600);  // HC-05 is connected to Serial TX/RX
+  Serial.begin(9600); // Now this talks directly to HC-05
 }
 
 void loop() {
-  int readData = DHT.read11(outPin);
-  if (readData == DHTLIB_OK) {
-    float t = DHT.temperature;
-    float h = DHT.humidity;
+  int dhtStatus = DHT.read11(DHTPIN);
+  int mq2Value = analogRead(MQ2PIN);
 
-    // Send over Bluetooth (Serial)
-    Serial.print("T:");
-    Serial.print(t);
-    Serial.print(" H:");
-    Serial.println(h);
+  if (dhtStatus == DHTLIB_OK) {
+    float temp = DHT.temperature;
+    float hum = DHT.humidity;
+
+    String data = "TEMP:" + String(temp) + "C, HUM:" + String(hum) + "%, MQ2:" + String(mq2Value);
+    Serial.println(data); // Sent directly to HC-05
   } else {
-    Serial.println("Read error");
+    Serial.println("DHT error");
   }
 
   delay(2000);
