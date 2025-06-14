@@ -12,21 +12,26 @@ import {
   Legend,
 } from 'chart.js';
 
+
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 export default function Temp() {
   const [labels, setLabels] = useState([]);
   const [temps, setTemps] = useState([]);
+  const [humidity,setHumidity]=useState([])
+  const [gas,setGas]=useState([])
   const chartRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
         const res = await axios.get('http://127.0.0.1:5000/api/temp');
-        const { temperature, timestamp } = res.data;
+        const { temperature, timestamp, humidity,gas } = res.data;
 
         setLabels((prev) => [...prev.slice(-19), new Date(timestamp * 1000).toLocaleTimeString()]);
         setTemps((prev) => [...prev.slice(-19), temperature]);
+        setHumidity((prev) => [...prev.slice(-19), humidity]);
+        setGas((prev) => [...prev.slice(-19), gas]);
       } catch (error) {
         console.error('Error fetching temperature:', error);
       }
@@ -60,8 +65,8 @@ export default function Temp() {
   };
 
   return (
-    <div style={{ padding: '2rem' }} className='h-[600px] w-[1200px]'>
-      <h1>🌡️ Live Temperature Monitoring</h1>
+    <div style={{ padding: '2rem' }} className='h-[600px] w-[1200px] bg-white rounded-2xl'>
+      <h1 className='font-semibold text-[20px]'>🌡️ Live Temperature Monitoring</h1>
       <Line ref={chartRef} data={data} options={options} />
     </div>
   );
